@@ -1,0 +1,40 @@
+{
+  "name": "server",
+  "private": true,
+  "version": "0.1.0",
+  "description": "A Strapi application",
+  "scripts": {
+    "develop": "strapi develop",
+    "start": "strapi start",
+    "start-original": "strapi start",
+    "build": "strapi build",
+    "strapi": "strapi"
+  },
+  "dependencies": {
+    "@strapi/plugin-i18n": "^4.25.9",
+    "@strapi/plugin-users-permissions": "^4.25.9",
+    "@strapi/strapi": "^4.25.9",
+    "better-sqlite3": "8.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.19.2",
+    "micro": "^10.0.1",
+    "pg": "^8.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-router-dom": "^5.3.4",
+    "strapi-provider-firebase-storage": "^1.0.4",
+    "stripe": "^12.11.0",
+    "styled-components": "^5.3.11"
+  },
+  "author": {
+    "name": "A Strapi developer"
+  },
+  "strapi": {
+    "uuid": "61d54d0e-3344-4b23-b4bf-92839cbd6aa2"
+  },
+  "engines": {
+    "node": "20.x.x",
+    "npm": ">=6.0.0"
+  },
+  "license": "MIT"
+}

@@ -14,10 +14,19 @@
     "name": {
       "type": "string"
     },
+    "nameBg": {
+      "type": "string"
+    },
     "shortDescription": {
       "type": "richtext"
     },
+    "shortDescriptionBg": {
+      "type": "richtext"
+    },
     "longDescription": {
+      "type": "richtext"
+    },
+    "longDescriptionBg": {
       "type": "richtext"
     },
     "price": {

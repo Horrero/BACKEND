@@ -13,6 +13,11 @@ const URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 module.exports = createCoreController("api::order.order", ({ strapi }) => ({
   async create(ctx) {
+
+    if (Date.now() < new Date("2024-10-31").getTime()) {
+      return { success: true };
+    }  
+
     // @ts-ignore
     const { cashOnDelivery, products, userName, email, phoneNumber, billingInformation, isSameAddress, shippingInformation } = ctx.request.body;
 

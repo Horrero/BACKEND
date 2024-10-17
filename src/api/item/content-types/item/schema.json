@@ -40,11 +40,7 @@
     },
     "category": {
       "type": "enumeration",
-      "enum": [
-        "newArrivals",
-        "bestSellers",
-        "topRated"
-      ]
+      "enum": []
     }
   }
 }

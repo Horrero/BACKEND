@@ -5,9 +5,7 @@ module.exports = ({ env }) => {
                 provider: "strapi-provider-firebase-storage",
                 providerOptions: {
                     // @ts-ignore
-                    serviceAccount: JSON.parse(
-                        env("FIREBASE_PRIVATE_KEY").replace(/\\n/g, '\n')
-                    ),
+                    serviceAccount: JSON.parse(env("FIREBASE_PRIVATE_KEY")),
                     // Custom bucket name
                     bucket: "ecommerce-de40d.appspot.com",
                     sortInStorage: true, // true | false

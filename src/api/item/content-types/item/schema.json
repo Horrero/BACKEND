@@ -44,6 +44,9 @@
     },
     "itemsCount": {
       "type": "integer"
+    },
+    "soldOut": {
+      "type": "boolean"
     }
   }
 }

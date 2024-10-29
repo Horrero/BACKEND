@@ -42,10 +42,10 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
         for (const product of products) {
           const item = await strapi.service("api::item.item").findOne(product.id);
           if (item) {
-            const newCount = item.itemCount - 1;
+            const newCount = item.itemsCount - 1;
             await strapi.service("api::item.item").update(product.id, {
               data: {
-                itemCount: newCount,
+                itemsCount: newCount,
                 soldOut: newCount <= 0,
               },
             });

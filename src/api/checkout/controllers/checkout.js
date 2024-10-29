@@ -49,6 +49,20 @@ module.exports = {
               stripeSessionId: session.id,
             },
           });
+
+          // Update item count and soldOut status
+          for (const product of JSON.parse(session.metadata.products)) {
+            const item = await strapi.service("api::item.item").findOne(product.id);
+            if (item) {
+              const newCount = item.itemsCount - 1;
+              await strapi.service("api::item.item").update(product.id, {
+                data: {
+                  itemsCount: newCount,
+                  soldOut: newCount <= 0,
+                },
+              });
+            }
+          }
         } catch (error) {
           console.info('Error saving order to the database:', error);
         }

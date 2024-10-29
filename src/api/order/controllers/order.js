@@ -14,9 +14,9 @@ const URL = process.env.FRONTEND_URL || "http://localhost:3000";
 module.exports = createCoreController("api::order.order", ({ strapi }) => ({
   async create(ctx) {
 
-    if (Date.now() < new Date("2024-10-31").getTime()) {
-      return { success: true };
-    }  
+    // if (Date.now() < new Date("2024-10-31").getTime()) {
+    //   return { success: true };
+    // }  
 
     // @ts-ignore
     const { cashOnDelivery, products, userName, email, phoneNumber, billingInformation, isSameAddress, shippingInformation } = ctx.request.body;
@@ -37,6 +37,20 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             stripeSessionId: "Cash On Delivery",
           },
         });
+
+        // Update item count and soldOut status
+        for (const product of products) {
+          const item = await strapi.service("api::item.item").findOne(product.id);
+          if (item) {
+            const newCount = item.itemCount - 1;
+            await strapi.service("api::item.item").update(product.id, {
+              data: {
+                itemCount: newCount,
+                soldOut: newCount <= 0,
+              },
+            });
+          }
+        }
 
         return { success: true };
       } catch(error) {

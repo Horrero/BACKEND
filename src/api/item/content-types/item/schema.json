@@ -41,6 +41,9 @@
     "category": {
       "type": "enumeration",
       "enum": []
+    },
+    "itemsCount": {
+      "type": "integer"
     }
   }
 }

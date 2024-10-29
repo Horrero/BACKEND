@@ -79,7 +79,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
               product_data: {
                 name: item.name,
               },
-              unit_amount: item.price * 100, // Stripe expects price in cents
+              unit_amount: Math.floor(item.price * 100), // Stripe expects price in cents
             },
             quantity: product.count,
           };

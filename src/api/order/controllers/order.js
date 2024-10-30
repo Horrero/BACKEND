@@ -21,9 +21,42 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
     // @ts-ignore
     const { cashOnDelivery, products, userName, email, phoneNumber, billingInformation, isSameAddress, shippingInformation } = ctx.request.body;
 
+    // Check if items are in stock
+    for (const product of products) {
+      const item = await strapi.service("api::item.item").findOne(product.id);
+      if (!item) {
+        ctx.response.status = 400;
+        return { error: { message: `Item with id ${product.id} not found` } };
+      }
+
+      if (item.soldOut) {
+        ctx.response.status = 400;
+        return { error: { message: `Item with id ${product.id} is sold out` } };
+      }
+
+      if (item.itemsCount < product.count) {
+        ctx.response.status = 400;
+        return { error: { message: `Not enough items in stock for item with id ${product.id}` } };
+      }
+    }
+
     // Logic for cash payment
     if(cashOnDelivery) {
       try {
+        // Update item count and soldOut status
+        for (const product of products) {
+          const item = await strapi.service("api::item.item").findOne(product.id);
+          if (item) {
+            const newCount = item.itemsCount - product.count;
+            await strapi.service("api::item.item").update(product.id, {
+              data: {
+                itemsCount: newCount,
+                soldOut: newCount <= 0,
+              },
+            });
+          }
+        }
+
         await strapi.service('api::order.order').create({
           data: {
             cashOnDelivery: true,
@@ -37,20 +70,6 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             stripeSessionId: "Cash On Delivery",
           },
         });
-
-        // Update item count and soldOut status
-        for (const product of products) {
-          const item = await strapi.service("api::item.item").findOne(product.id);
-          if (item) {
-            const newCount = item.itemsCount - 1;
-            await strapi.service("api::item.item").update(product.id, {
-              data: {
-                itemsCount: newCount,
-                soldOut: newCount <= 0,
-              },
-            });
-          }
-        }
 
         return { success: true };
       } catch(error) {

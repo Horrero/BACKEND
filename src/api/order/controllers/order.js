@@ -92,13 +92,15 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             throw new Error(`Product with id ${product.id} not found`);
           }
 
+          const price = item.discountedPrice ? item.discountedPrice : item.price;
+
           return {
             price_data: {
               currency: "bgn",
               product_data: {
                 name: item.name,
               },
-              unit_amount: Math.floor(item.price * 100), // Stripe expects price in cents
+              unit_amount: Math.floor(price * 100), // Stripe expects price in cents
             },
             quantity: product.count,
           };

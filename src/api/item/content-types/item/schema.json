@@ -47,6 +47,9 @@
     },
     "soldOut": {
       "type": "boolean"
+    },
+    "discountPrice": {
+      "type": "integer"
     }
   }
 }

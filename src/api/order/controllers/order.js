@@ -49,7 +49,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
           for (const product of products) {
             const item = await strapi.service("api::item.item").findOne(product.id, { populate: 'sizes' });
             const size = item.sizes.find(size => size.name === product.size);
-            const newCount = size.itemCount - product.count;
+            const newCount = size.itemsCount - product.count;
             await strapi.service("api::item.item").update(product.id, {
               data: {
                 sizes: item.sizes.map(s => s.name === product.size ? { ...s, itemsCount: newCount, soldOut: newCount <= 0 } : s)

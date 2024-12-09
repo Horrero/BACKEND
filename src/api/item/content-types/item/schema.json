@@ -48,6 +48,11 @@
     "soldOut": {
       "type": "boolean"
     },
+    "sizes": {
+      "type": "component",
+      "repeatable": true,
+      "component": "size.size"
+    },
     "discountPrice": {
       "type": "decimal"
     }

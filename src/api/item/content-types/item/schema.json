@@ -42,12 +42,6 @@
       "type": "enumeration",
       "enum": []
     },
-    "itemsCount": {
-      "type": "integer"
-    },
-    "soldOut": {
-      "type": "boolean"
-    },
     "sizes": {
       "type": "component",
       "repeatable": true,

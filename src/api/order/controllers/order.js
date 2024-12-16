@@ -92,7 +92,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             throw new Error(`Product with id ${product.id} not found`);
           }
 
-          const price = item.discountedPrice ? item.discountedPrice : item.price;
+          const price = item.discountPrice ? item.discountPrice : item.price;
 
           return {
             price_data: {
@@ -113,7 +113,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
         customer_email: email,
         mode: "payment",
         success_url: `${URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
-        cancel_url: URL,
+        cancel_url: `${URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`,
         line_items: lineItems,
         metadata: {
           userName,

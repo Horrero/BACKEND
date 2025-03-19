@@ -3,6 +3,8 @@ const path = require('path');
 module.exports = ({ env }) => {
   const client = env('DATABASE_CLIENT', 'postgres');
 
+  const isProduction = env('NODE_ENV') === 'production';
+
   const connections = {
     mysql: {
       connection: {
@@ -47,12 +49,22 @@ module.exports = ({ env }) => {
       },
       pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
     },
-    postgres: {
+    postgres: isProduction ? {
       connection: {
         connectionString: env('DATABASE_URL') || "postgresql://postgres.dhdthyvnkmnikymlsczp:9rJi2bNX9tQ4I8mr@aws-0-eu-central-1.pooler.supabase.com:6543/postgres",
         ssl: { rejectUnauthorized: false },
       },
       pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
+    } : {
+      connection: {
+        host: env('DATABASE_HOST'),
+        port: env.int('DATABASE_PORT'),
+        database: env('DATABASE_NAME'),
+        user: env('DATABASE_USER'),
+        password: env('DATABASE_PASSWORD'),
+        ssl: env.bool('DATABASE_SSL')
+      },
+      pool: { min: 2, max: 10 },
     },
     sqlite: {
       connection: {

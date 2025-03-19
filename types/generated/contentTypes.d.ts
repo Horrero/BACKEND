@@ -800,11 +800,16 @@ export interface ApiItemItem extends Schema.CollectionType {
   };
   attributes: {
     name: Attribute.String;
+    nameBg: Attribute.String;
     shortDescription: Attribute.RichText;
+    shortDescriptionBg: Attribute.RichText;
     longDescription: Attribute.RichText;
+    longDescriptionBg: Attribute.RichText;
     price: Attribute.Decimal;
-    image: Attribute.Media<'images' | 'files' | 'videos' | 'audios'>;
-    category: Attribute.Enumeration<['newArrivals', 'bestSellers', 'topRated']>;
+    image: Attribute.Media<'images'>;
+    category: Attribute.Enumeration<[]>;
+    sizes: Attribute.Component<'size.size', true>;
+    discountPrice: Attribute.Decimal;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -826,6 +831,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     draftAndPublish: true;
   };
   attributes: {
+    cashOnDelivery: Attribute.Boolean;
     products: Attribute.JSON;
     email: Attribute.String;
     phoneNumber: Attribute.String;
@@ -834,6 +840,7 @@ export interface ApiOrderOrder extends Schema.CollectionType {
     shippingInformation: Attribute.JSON;
     userName: Attribute.String;
     stripeSessionId: Attribute.String;
+    promoCode: Attribute.String;
     createdAt: Attribute.DateTime;
     updatedAt: Attribute.DateTime;
     publishedAt: Attribute.DateTime;
@@ -845,6 +852,37 @@ export interface ApiOrderOrder extends Schema.CollectionType {
       Attribute.Private;
     updatedBy: Attribute.Relation<
       'api::order.order',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+  };
+}
+
+export interface ApiPromoCodePromoCode extends Schema.CollectionType {
+  collectionName: 'promo_codes';
+  info: {
+    singularName: 'promo-code';
+    pluralName: 'promo-codes';
+    displayName: 'Promo Code';
+  };
+  options: {
+    draftAndPublish: true;
+  };
+  attributes: {
+    Code: Attribute.String;
+    Discount: Attribute.Integer;
+    createdAt: Attribute.DateTime;
+    updatedAt: Attribute.DateTime;
+    publishedAt: Attribute.DateTime;
+    createdBy: Attribute.Relation<
+      'api::promo-code.promo-code',
+      'oneToOne',
+      'admin::user'
+    > &
+      Attribute.Private;
+    updatedBy: Attribute.Relation<
+      'api::promo-code.promo-code',
       'oneToOne',
       'admin::user'
     > &
@@ -872,6 +910,7 @@ declare module '@strapi/types' {
       'plugin::users-permissions.user': PluginUsersPermissionsUser;
       'api::item.item': ApiItemItem;
       'api::order.order': ApiOrderOrder;
+      'api::promo-code.promo-code': ApiPromoCodePromoCode;
     }
   }
 }

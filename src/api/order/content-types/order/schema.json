@@ -37,6 +37,9 @@
     },
     "stripeSessionId": {
       "type": "string"
+    },
+    "promoCode": {
+      "type": "string"
     }
   }
 }

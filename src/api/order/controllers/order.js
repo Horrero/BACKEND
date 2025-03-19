@@ -14,7 +14,8 @@ const URL = process.env.FRONTEND_URL || "http://localhost:3000";
 module.exports = createCoreController("api::order.order", ({ strapi }) => ({
   async create(ctx) {
     // @ts-ignore
-    const { cashOnDelivery, products, userName, email, phoneNumber, billingInformation, isSameAddress, shippingInformation, dev } = ctx.request.body;
+    const { cashOnDelivery, products, userName, email, phoneNumber, billingInformation, isSameAddress, shippingInformation, promoCode, dev } = ctx.request.body;
+    let finalPromoCode = promoCode ? promoCode.toUpperCase() : null;
 
     if(dev) {
       // Dev Logic...
@@ -39,9 +40,18 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
         return { error: { message: `Size ${product.size} of item with id ${product.id} is sold out` } };
       }
 
-      if (size.itemCount < product.count) {
+      if (size.itemsCount < product.count) {
         ctx.response.status = 400;
         return { error: { message: `Not enough items in stock for size ${product.size} of item with id ${product.id}` } };
+      }
+    }
+
+    // Validate promo code
+    let validPromo = null;
+    if(finalPromoCode) {
+      validPromo = await strapi.db.query('api::promo-code.promo-code').findOne({ where: { code: finalPromoCode } });
+      if(!validPromo) {
+        finalPromoCode = null;
       }
     }
 
@@ -70,6 +80,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
             isSameAddress: isSameAddress,
             shippingInformation: shippingInformation,
             stripeSessionId: "Cash On Delivery",
+            promoCode: finalPromoCode
           },
         });
         return { success: true };
@@ -106,7 +117,18 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
           };
         })
       );
-  
+    
+      // Create a coupon in Stripe if a valid promo code is provided
+      let couponId = null;
+      if (finalPromoCode) {
+        const coupon = await stripe.coupons.create({
+          percent_off: validPromo.Discount,
+          duration: 'once',
+          name: finalPromoCode,
+        });
+        couponId = coupon.id;
+      }
+    
       // Create a stripe session
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ["card"],
@@ -115,6 +137,7 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
         success_url: `${URL}/checkout/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${URL}/checkout/cancel?session_id={CHECKOUT_SESSION_ID}`,
         line_items: lineItems,
+        discounts: couponId ? [{ coupon: couponId }] : [],
         metadata: {
           userName,
           products: JSON.stringify(products),
@@ -122,7 +145,8 @@ module.exports = createCoreController("api::order.order", ({ strapi }) => ({
           phoneNumber,
           billingInformation: JSON.stringify(billingInformation),
           isSameAddress: JSON.stringify(isSameAddress),
-          shippingInformation: JSON.stringify(shippingInformation)
+          shippingInformation: JSON.stringify(shippingInformation),
+          promoCode: finalPromoCode // Add promo code to metadata
         },
       });
 

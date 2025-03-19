@@ -47,6 +47,7 @@ module.exports = {
               isSameAddress: JSON.parse(session.metadata.isSameAddress),
               shippingInformation: JSON.parse(session.metadata.shippingInformation),
               stripeSessionId: session.id,
+              promoCode: session.metadata.promoCode,
             },
           });
 

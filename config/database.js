@@ -3,7 +3,7 @@ const path = require('path');
 module.exports = ({ env }) => {
   const client = env('DATABASE_CLIENT', 'postgres');
 
-  const isProduction = env('NODE_ENV') === 'production';
+  const isProduction = env('DEVELOP') ? false : true;
 
   const connections = {
     mysql: {

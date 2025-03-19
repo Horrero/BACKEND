@@ -1,5 +1,5 @@
 module.exports = ({ env }) => {
-    const isProduction = env('NODE_ENV') === 'production';
+    const isProduction = env('DEVELOP') ? false : true;
 
     console.log(isProduction ? "Using Firebase" : "Using on device storage");
 

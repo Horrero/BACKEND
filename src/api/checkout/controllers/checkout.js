@@ -53,16 +53,14 @@ module.exports = {
 
           // Update item count and soldOut status
           for (const product of JSON.parse(session.metadata.products)) {
-            const item = await strapi.service("api::item.item").findOne(product.id);
-            if (item) {
-              const newCount = item.itemsCount - 1;
-              await strapi.service("api::item.item").update(product.id, {
-                data: {
-                  itemsCount: newCount,
-                  soldOut: newCount <= 0,
-                },
-              });
-            }
+            const item = await strapi.service("api::item.item").findOne(product.id, { populate: 'sizes' });
+            const size = item.sizes.find(size => size.name === product.size);
+            const newCount = size.itemsCount - product.count;
+            await strapi.service("api::item.item").update(product.id, {
+              data: {
+                sizes: item.sizes.map(s => s.name === product.size ? { ...s, itemsCount: newCount, soldOut: newCount <= 0 } : s)
+              },
+            });
           }
         } catch (error) {
           console.info('Error saving order to the database:', error);

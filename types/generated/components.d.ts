@@ -1,14 +1,14 @@
-import type { Schema, Attribute } from '@strapi/strapi';
+import type { Attribute, Schema } from '@strapi/strapi';
 
 export interface SizeSize extends Schema.Component {
   collectionName: 'components_sizes_size';
   info: {
-    name: 'Size';
     description: 'Holds the size details for an item';
+    name: 'Size';
   };
   attributes: {
-    name: Attribute.String & Attribute.Required;
     itemsCount: Attribute.Integer & Attribute.DefaultTo<0>;
+    name: Attribute.String & Attribute.Required;
     soldOut: Attribute.Boolean & Attribute.DefaultTo<false>;
   };
 }

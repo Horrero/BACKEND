@@ -51,8 +51,8 @@ module.exports = ({ env }) => {
     },
     postgres: isProduction ? {
       connection: {
-        connectionString: env('DATABASE_URL') || "postgresql://postgres.dhdthyvnkmnikymlsczp:9rJi2bNX9tQ4I8mr@aws-0-eu-central-1.pooler.supabase.com:6543/postgres",
-        ssl: { rejectUnauthorized: false },
+        connectionString: env('DATABASE_URL'),
+        ssl: { rejectUnauthorized: true },
       },
       pool: { min: env.int('DATABASE_POOL_MIN', 2), max: env.int('DATABASE_POOL_MAX', 10) },
     } : {
